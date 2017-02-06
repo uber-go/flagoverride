@@ -13,9 +13,9 @@ the file and to override some of the configs.
 
 Let's say we use a yaml to config our Db connections and upon start of the
 application we load from the yaml file to get the necessary parameters to
-create the connection. Our base.yaml looks like this
+create the connection. Our base.yaml looks like this:
 
-```
+```yaml
   base.yaml
   ---
   mysql:
@@ -36,14 +36,13 @@ tedious. This package provides an automatic way to define this override,
 which is, given a struct, it'll create all the flags which are name using
 the field names of the struct. If one of these flags are set via command
 line, the struct will be modified in-place to reflect the value from command
-line, therefore the values of the fields in the struct are overridden
+line, therefore the values of the fields in the struct are overridden.
 
-YAML is just used as an example here. In practice, one can use any struct
-to define flags.
+YAML is just used as an example here. In practice, one can use any struct tdefine flags.
 
-Let's say we have our configration object as the following.
+Let's say we have our configuration object as the following:
 
-```
+```go
   type logging struct {
   	 Interval int
   	 Path     string
@@ -71,16 +70,16 @@ Let's say we have our configration object as the following.
   }
 ```
 
-The following code
+The following code:
 
-```
+```go
   func main() {
     c := &Cfg{}
     flags.ParseArgs(c, os.Args[1:])
   }
 ```
 
-will create the following flags
+will create the following flags:
 
 ```
   -logging.interval int
@@ -99,9 +98,9 @@ will create the following flags
         network.writetimeout
 ```
 
-flags to subcommands are naturally suported.
+flags to subcommands are naturally supported.
 
-```
+```go
   func main() {
     cmd := os.Args[1]
     switch cmd {
@@ -117,10 +116,10 @@ flags to subcommands are naturally suported.
   }
 ```
 
-One can set Flatten to true when calling NewFlagMakerAdv, in which case,
+One can set Flatten to true when calling `NewFlagMakerAdv`, in which case,
 flags are created without namespacing. For example,
 
-```
+```go
   type auth struct {
    Token string
    Tag   float64
@@ -149,7 +148,7 @@ flags are created without namespacing. For example,
   }
 ```
 
-will create the following flags
+will create the following flags:
 
 ```
   -dbname string
@@ -172,16 +171,17 @@ will create the following flags
 
 Please be aware that usual GoLang flag creation rules apply, i.e., if there are
 duplication in flag names (in the flattened case it's more likely to happen
-unless the caller make due dilligence to create the struct properly), it panics.
+unless the caller make due diligence to create the struct properly), it panics.  
 
-Note that not all types can have command line flags created for. map, channel
-and function type will not defien a flag corresponding to the field. Pointer
-types are properly handled and slice type will create multi-value command
-line flags. That is, e.g. if a field foo's type is []int, one can use
+Note that not all types can have command line flags created for.  
+
+`map`, `channel` and function type will not define a flag corresponding to the field.  
+
+Pointer types are properly handled and slice type will create multi-value command line flags.  
+
+That is, e.g. if a field foo's type is `[]int`, one can use
 --foo 10 --foo 15 --foo 20 to override this field value to be
-[]int{10, 15, 20}. For now, only []int, []string and []float64 are supported
-in this fashion.
+`[]int{10, 15, 20}`. For now, only `[]int`, `[]string` and `[]float64` are supported in this fashion.  
 
 <hr>
 Released under the [MIT License](LICENSE.txt).
-
